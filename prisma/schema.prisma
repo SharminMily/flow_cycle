@@ -8,9 +8,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 //Customer Table
 model Customer {
-  customerId String   @id @default(uuid())
+ id String   @id @default(uuid())
   name String 
   email String @unique
   phone String 
@@ -22,22 +23,22 @@ model Customer {
 
 //Bike Table
 model Bike {
-   bikeId   String    @id @default(uuid())
-   brand String 
-   model String
-   year Int
-    customerId String
-  customer   Customer @relation(fields: [customerId], references: [customerId])
-   service ServiceRecord[]
+  id          String     @id @default(uuid())
+  brand       String
+  model       String
+  year        Int
+  customerId  String
+  customer    Customer   @relation(fields: [customerId], references: [id])
+  service     ServiceRecord[]
 
-   @@map("bikes")
+  @@map("bikes")
 }
 
 //ServiceRecord Table
 model ServiceRecord {
-  serviceId String @id @default(uuid())
-bikeId          String
-  bike            Bike     @relation(fields: [bikeId], references: [bikeId])
+  id String @id @default(uuid())
+bikeId  String
+  bike  Bike @relation(fields: [bikeId ], references: [id])
   serviceDate DateTime @default(now())
   completionDate DateTime?
   description String
@@ -46,6 +47,7 @@ bikeId          String
 
 enum Status {
   pending
-  inProgress
+  in_progress @map("in-progress")
   done
 }
+
