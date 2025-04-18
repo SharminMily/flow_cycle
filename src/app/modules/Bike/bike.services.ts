@@ -3,7 +3,7 @@ import { TBike } from "./bike.interface";
 
 //Create Bike
 const createbike = async (payload: TBike): Promise<TBike> => {
-    const customerData = {
+    const bikeData = {
         brand: payload.brand as string,
       model: payload.model as string,
       year: payload.year as number,
@@ -11,7 +11,7 @@ const createbike = async (payload: TBike): Promise<TBike> => {
     };
   
     const result = await prisma.bike.create({
-      data: customerData,
+      data: bikeData,
     });
     return result;
 
