@@ -3,9 +3,7 @@ import { TCustomer } from "./customer.interface";
 
 //Create Customer
 const createCustomer = async (payload: TCustomer): Promise<TCustomer> => {
-  console.log("create customer!!!", { payload });
-  console.log("incoming data shape:", JSON.stringify(payload, null, 2));
-
+  
   if (!payload.name || !payload.email || !payload.phone) {
     throw new Error("All fields are required.");
   }
