@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express'
 import { CustomerRouter } from './app/modules/Customer/customer.routes';
 import cors from 'cors'
+import router from './app/routes';
 const app: Application = express();
 app.use(cors());
 //parser
@@ -13,6 +14,6 @@ app.get('/', (req: Request, res: Response) => {
     })
 })
 
-app.use("/api/customers", CustomerRouter)
+app.use("/api", router)
 
 export default app;
