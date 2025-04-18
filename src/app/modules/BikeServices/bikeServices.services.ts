@@ -86,11 +86,36 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
     };
   };
 
+  const getOverdueOrPendingServices = async (): Promise<TServiceRecord[]> => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  
+    const results = await prisma.serviceRecord.findMany({
+      where: {
+        status: {
+          in: ['pending', 'in_progress'],
+        },
+        serviceDate: {
+          lt: sevenDaysAgo,
+        },
+      },
+    });
+  
+    return results.map((record) => ({
+      serviceId: record.id,
+      bikeId: record.bikeId,
+      serviceDate: record.serviceDate.toISOString(),
+      completionDate: record.completionDate ? record.completionDate.toISOString() : null,
+      description: record.description,
+      status: record.status,
+    }));
+  };
 
   export const BikeSRecordServices = {
     createServicesRecord,
     getAllBikeServicesFromDB,
     getByIdFromDB,
     updateIntoDB,
-    deleteFromDB
+    deleteFromDB,
+    getOverdueOrPendingServices
   }

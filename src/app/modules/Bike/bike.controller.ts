@@ -7,10 +7,9 @@ const createBike = catchAsynce (async (req, res) => {
     //console.log(req.query)  
     const result = await BikeService.createbike (req.body);  
     sendResponse(res, {
-      statusCode:  httpStatus.OK,
+      statusCode:  httpStatus.CREATED,
       success: true,
-      message: "Bike added successfully",
-      //meta: result.meta,
+      message: "Bike added successfully",     
       data: result
     })
   })
