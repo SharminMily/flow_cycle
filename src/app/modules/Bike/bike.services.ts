@@ -33,7 +33,7 @@ const getByIdFromDB = async (id: string): Promise<TBike | null>  => {
         where: { id }
       })
       if(!result){
-        throw new Error("Id not found")
+        throw new Error("bike id not found")
     }
     return result;
   };

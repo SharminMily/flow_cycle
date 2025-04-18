@@ -34,7 +34,7 @@ const getByIdFromDB = async (id: string): Promise<TCustomer | null>  => {
         }
       })
       if(!result){
-        throw new Error("Id not found")
+        throw new Error("Customer not found")
     }
     return result;
   };

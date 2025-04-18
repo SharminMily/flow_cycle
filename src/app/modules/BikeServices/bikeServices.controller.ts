@@ -62,17 +62,17 @@ const updateIdFromDB = catchAsynce (async (req, res) => {
       data: result
     })
   })
-  
+
   const getServiceStatusHandler = catchAsynce(async (req, res) => {
-    const result = await BikeSRecordServices.getOverdueOrPendingServices();
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Overdue or pending services fetched successfully",
-      data: result,
-    });
+  const result = await BikeSRecordServices.getOverdueOrPendingServices();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Overdue or pending services fetched successfully",
+    data: result,
   });
+});
 
   export const BikeSRecordController = {
   createBikeServicesRecord,

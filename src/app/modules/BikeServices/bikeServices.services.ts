@@ -22,10 +22,6 @@ const createServicesRecord = async (payload: TServiceRecord): Promise<TServiceRe
         description: result.description,
         status: result.status
       };
-
-//   if (!payload.name || !payload.email || !payload.phone) {
-//     throw new Error("All fields are required.");
-//   }
 }
 
 
@@ -41,7 +37,7 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
         where: { id }
       })
       if(!result){
-        throw new Error("Id not found")
+        throw new Error("Bike services Record not found")
     }
     return {
         serviceId: result.id, // mapping 'id' to 'serviceId'
@@ -87,8 +83,12 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
   };
 
   const getOverdueOrPendingServices = async (): Promise<TServiceRecord[]> => {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const now = new Date();
+    const sevenDaysAgoUTC = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() - 7
+    ));
   
     const results = await prisma.serviceRecord.findMany({
       where: {
@@ -96,10 +96,10 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
           in: ['pending', 'in_progress'],
         },
         serviceDate: {
-          lt: sevenDaysAgo,
+          lt: sevenDaysAgoUTC, 
         },
       },
-    });
+    });  
   
     return results.map((record) => ({
       serviceId: record.id,
