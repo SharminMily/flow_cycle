@@ -68,7 +68,7 @@ const deleteCustomerFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __await
         statusCode: http_status_1.default.OK,
         success: true,
         message: "Customer deleted successfully",
-        data: result
+        data: []
     });
 }));
 exports.CustomerController = {

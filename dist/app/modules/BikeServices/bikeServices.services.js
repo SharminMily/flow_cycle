@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BikeSRecordServices = void 0;
+const AppError_1 = __importDefault(require("../../../shared/AppError"));
 const prismaClient_1 = require("../../../shared/prismaClient");
+const http_status_1 = __importDefault(require("http-status"));
 //Create Bike Record
 const createServicesRecord = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const servicesRecordData = {
@@ -25,14 +30,12 @@ const createServicesRecord = (payload) => __awaiter(void 0, void 0, void 0, func
     return {
         serviceId: result.id,
         bikeId: result.bikeId,
-        serviceDate: result.serviceDate.toISOString(), // ✅ convert to string
+        //  convert to string
+        serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
         description: result.description,
         status: result.status
     };
-    //   if (!payload.name || !payload.email || !payload.phone) {
-    //     throw new Error("All fields are required.");
-    //   }
 });
 //get all Bikes Record from database
 const getAllBikeServicesFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,10 +48,10 @@ const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
         where: { id }
     });
     if (!result) {
-        throw new Error("Id not found");
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Bike services Record not found");
     }
     return {
-        serviceId: result.id, // mapping 'id' to 'serviceId'
+        serviceId: result.id,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -56,21 +59,46 @@ const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
         status: result.status
     };
 });
+//   const existingCustomer = await prisma.customer.findUnique({
+//     where: { id }
+//   });
+//   if (!existingCustomer) {
+//     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+//   }
+//   const result = await prisma.customer.update({
+//       where: {
+//         id: id
+//       },
+//       data: {
+//         name: data.name,
+//         phone: data.phone,
+//         email: undefined,
+//       }
+//     })
+//     const { email, ...rest } = result;
+//     return rest as TCustomerRest;
+// };
 //Update from Database
 const updateIntoDB = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!id) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "Service ID is required");
+    }
+    // Check if the service record exists
+    const existingRecord = yield prismaClient_1.prisma.serviceRecord.findUnique({ where: { id } });
+    if (!existingRecord) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Service record not found");
+    }
     const result = yield prismaClient_1.prisma.serviceRecord.update({
-        where: {
-            id: id
-        },
-        data
+        where: { id },
+        data,
     });
     return {
-        serviceId: result.id, // mapping 'id' to 'serviceId'
+        serviceId: result.id,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
         description: result.description,
-        status: result.status
+        status: result.status,
     };
 });
 //delete Bike from database
@@ -86,15 +114,15 @@ const deleteFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 const getOverdueOrPendingServices = () => __awaiter(void 0, void 0, void 0, function* () {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const now = new Date();
+    const sevenDaysAgoUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7));
     const results = yield prismaClient_1.prisma.serviceRecord.findMany({
         where: {
             status: {
                 in: ['pending', 'in_progress'],
             },
             serviceDate: {
-                lt: sevenDaysAgo,
+                lt: sevenDaysAgoUTC,
             },
         },
     });

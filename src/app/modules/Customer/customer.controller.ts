@@ -59,7 +59,7 @@ const deleteCustomerFromDB = catchAsynce (async (req, res) => {
     statusCode:  httpStatus.OK,
     success: true,
     message: "Customer deleted successfully", 
-    data: result
+    data: [] 
   })
 })
 

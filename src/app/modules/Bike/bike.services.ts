@@ -1,8 +1,19 @@
+import AppError from "../../../shared/AppError";
 import { prisma } from "../../../shared/prismaClient";
 import { TBike } from "./bike.interface";
+import httpStatus from "http-status"
 
 //Create Bike
 const createbike = async (payload: TBike): Promise<TBike> => {
+
+  const customerExists = await prisma.customer.findUnique({
+    where: { id: payload.customerId }
+  });
+
+  if (!customerExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+  }
+
     const bikeData = {
         brand: payload.brand as string,
       model: payload.model as string,
@@ -15,9 +26,6 @@ const createbike = async (payload: TBike): Promise<TBike> => {
     });
     return result;
 
-//   if (!payload.name || !payload.email || !payload.phone) {
-//     throw new Error("All fields are required.");
-//   }
 }
 
 
@@ -32,9 +40,9 @@ const getByIdFromDB = async (id: string): Promise<TBike | null>  => {
     const result = await prisma.bike.findUnique({
         where: { id }
       })
-      if(!result){
-        throw new Error("bike id not found")
-    }
+      if (!result) {
+        throw new AppError(httpStatus.NOT_FOUND, "bike not found");
+      }
     return result;
   };
 

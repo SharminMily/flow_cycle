@@ -8,11 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BikeService = void 0;
+const AppError_1 = __importDefault(require("../../../shared/AppError"));
 const prismaClient_1 = require("../../../shared/prismaClient");
+const http_status_1 = __importDefault(require("http-status"));
 //Create Bike
 const createbike = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const customerExists = yield prismaClient_1.prisma.customer.findUnique({
+        where: { id: payload.customerId }
+    });
+    if (!customerExists) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Customer not found");
+    }
     const bikeData = {
         brand: payload.brand,
         model: payload.model,
@@ -23,9 +34,6 @@ const createbike = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         data: bikeData,
     });
     return result;
-    //   if (!payload.name || !payload.email || !payload.phone) {
-    //     throw new Error("All fields are required.");
-    //   }
 });
 //get all Bikes from database
 const getAllBikeFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,7 +46,7 @@ const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
         where: { id }
     });
     if (!result) {
-        throw new Error("Id not found");
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, "bike not found");
     }
     return result;
 });

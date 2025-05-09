@@ -1,6 +1,8 @@
 import { Status } from "../../../../generated/prisma";
+import AppError from "../../../shared/AppError";
 import { prisma } from "../../../shared/prismaClient";
 import { TServiceRecord } from "./bikeServices.interface";
+import  httpStatus  from "http-status";
 
 //Create Bike Record
 const createServicesRecord = async (payload: TServiceRecord): Promise<TServiceRecord> => {
@@ -17,7 +19,9 @@ const createServicesRecord = async (payload: TServiceRecord): Promise<TServiceRe
     return {
         serviceId: result.id,
         bikeId: result.bikeId,
-        serviceDate: result.serviceDate.toISOString(), // ✅ convert to string
+
+        //  convert to string
+        serviceDate: result.serviceDate.toISOString(), 
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
         description: result.description,
         status: result.status
@@ -37,10 +41,11 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
         where: { id }
       })
       if(!result){
-        throw new Error("Bike services Record not found")
-    }
+        throw new AppError(httpStatus.NOT_FOUND, "Bike services Record not found")       
+    }    
+    
     return {
-        serviceId: result.id, // mapping 'id' to 'serviceId'
+        serviceId: result.id, 
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -48,23 +53,53 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
         status: result.status
       };
   };
-
+  
+  //   const existingCustomer = await prisma.customer.findUnique({
+  //     where: { id }
+  //   });
+  
+  //   if (!existingCustomer) {
+  //     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+  //   }
+  //   const result = await prisma.customer.update({
+  //       where: {
+  //         id: id
+  //       },
+  //       data: {
+  //         name: data.name,
+  //         phone: data.phone,
+  //         email: undefined,
+  //       }
+  //     })
+     
+  //     const { email, ...rest } = result;
+  //     return rest as TCustomerRest;
+  // };
   //Update from Database
   const updateIntoDB = async (id: string, data: Partial<TServiceRecord>): Promise<TServiceRecord> => {  
-    const result = await prisma.serviceRecord.update({
-        where: {
-          id: id
-        },
-        data
-      })
-      return {
-        serviceId: result.id, // mapping 'id' to 'serviceId'
-        bikeId: result.bikeId,
-        serviceDate: result.serviceDate.toISOString(),
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
-        description: result.description,
-        status: result.status
-      };
+
+    if (!id) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Service ID is required");
+    }
+  
+    // Check if the service record exists
+    const existingRecord = await prisma.serviceRecord.findUnique({ where: { id } });
+    if (!existingRecord) {
+      throw new AppError(httpStatus.NOT_FOUND, "Service record not found");
+    }
+
+  const result = await prisma.serviceRecord.update({
+    where: { id },
+    data,
+  });
+  return {
+    serviceId: result.id,
+    bikeId: result.bikeId,
+    serviceDate: result.serviceDate.toISOString(),
+    completionDate: result.completionDate ? result.completionDate.toISOString() : null,
+    description: result.description,
+    status: result.status,
+  };
   };
 
 
