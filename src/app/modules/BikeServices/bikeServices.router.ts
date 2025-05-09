@@ -5,11 +5,11 @@ const router = express.Router();
 
 
 router.get("/status", BikeSRecordController.getServiceStatusHandler); 
-router.get("/:id", BikeSRecordController.getByIdFromDB) 
+router.get("/:serviceId", BikeSRecordController.getByIdFromDB) 
 router.post("/", BikeSRecordController.createBikeServicesRecord) 
 router.get("/", BikeSRecordController.getAllBikeSRecordFromDB) 
-router.put("/:id", BikeSRecordController.updateIdFromDB) 
-router.delete("/:id", BikeSRecordController.deleteBikeSRecordFromDB) 
+router.put("/:serviceId", BikeSRecordController.updateIdFromDB) 
+router.delete("/:serviceId", BikeSRecordController.deleteBikeSRecordFromDB) 
 
 
 

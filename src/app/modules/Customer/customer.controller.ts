@@ -4,7 +4,7 @@ import { sendResponse } from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { catchAsynce } from "../../../shared/catchAsync";
 const createCustomer = catchAsynce (async (req, res) => {
-  //console.log(req.query)  
+ // console.log(req.body)  
   const result = await CustomerServices.createCustomer(req.body);  
   sendResponse(res, {
     statusCode:  httpStatus.CREATED,
@@ -29,8 +29,9 @@ const getAllCustomerFromDB = catchAsynce (async (req, res) => {
 
 //single customer from database
 const getByIdFromDB = catchAsynce (async (req, res) => {
-  const {id} = req.params 
-  const result = await CustomerServices.getByIdFromDB(id);  
+  const {customerId } = req.params 
+  console.log(customerId)
+  const result = await CustomerServices.getByIdFromDB(customerId );  
   sendResponse(res, {
     statusCode:  httpStatus.OK,
     success: true,
@@ -41,8 +42,8 @@ const getByIdFromDB = catchAsynce (async (req, res) => {
 
 //update
 const updateIdFromDB = catchAsynce (async (req, res) => {
-  const {id} = req.params 
-  const result = await CustomerServices.updateIntoDB(id, req.body);  
+  const {customerId } = req.params 
+  const result = await CustomerServices.updateIntoDB(customerId , req.body);  
   sendResponse(res, {
     statusCode:  httpStatus.OK,
     success: true,
@@ -53,8 +54,8 @@ const updateIdFromDB = catchAsynce (async (req, res) => {
 
 //Delete customer from database
 const deleteCustomerFromDB = catchAsynce (async (req, res) => {
-  const {id} = req.params 
-  const result = await CustomerServices.deleteFromDB(id);  
+  const {customerId } = req.params 
+  const result = await CustomerServices.deleteFromDB(customerId );  
   sendResponse(res, {
     statusCode:  httpStatus.OK,
     success: true,

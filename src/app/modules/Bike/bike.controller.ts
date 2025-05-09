@@ -28,8 +28,8 @@ const getAllBikeFromDB = catchAsynce (async (req, res) => {
   
   //single bike from database
   const getByIdFromDB = catchAsynce (async (req, res) => {
-    const {id} = req.params 
-    const result = await BikeService.getByIdFromDB(id);  
+    const {bikeId} = req.params 
+    const result = await BikeService.getByIdFromDB(bikeId);  
     sendResponse(res, {
       statusCode:  httpStatus.OK,
       success: true,
@@ -41,8 +41,8 @@ const getAllBikeFromDB = catchAsynce (async (req, res) => {
   
   ///update
 const updateIdFromDB = catchAsynce (async (req, res) => {
-    const {id} = req.params 
-    const result = await BikeService.updateIntoDB(id, req.body);  
+    const {bikeId} = req.params 
+    const result = await BikeService.updateIntoDB(bikeId, req.body);  
     sendResponse(res, {
       statusCode:  httpStatus.OK,
       success: true,
@@ -53,13 +53,13 @@ const updateIdFromDB = catchAsynce (async (req, res) => {
   
   //Delete bike from database
   const deleteBikeFromDB = catchAsynce (async (req, res) => {
-    const {id} = req.params 
-    const result = await BikeService.deleteFromDB(id);  
+    const {bikeId} = req.params 
+    const result = await BikeService.deleteFromDB(bikeId);  
     sendResponse(res, {
       statusCode:  httpStatus.OK,
       success: true,
       message: "Bike deleted successfully", 
-      data: result
+      data: []
     })
   })
   

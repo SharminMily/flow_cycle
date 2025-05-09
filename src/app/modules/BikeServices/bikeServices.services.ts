@@ -1,8 +1,14 @@
-import { Status } from "../../../../generated/prisma";
+
+import { Status } from "../../../generated/prisma";
 import AppError from "../../../shared/AppError";
 import { prisma } from "../../../shared/prismaClient";
 import { TServiceRecord } from "./bikeServices.interface";
 import  httpStatus  from "http-status";
+
+type ServiceResponse = {
+  data: TServiceRecord[];
+  message: string;
+}
 
 //Create Bike Record
 const createServicesRecord = async (payload: TServiceRecord): Promise<TServiceRecord> => {
@@ -17,7 +23,7 @@ const createServicesRecord = async (payload: TServiceRecord): Promise<TServiceRe
       data: servicesRecordData,
     });
     return {
-        serviceId: result.id,
+        serviceId: result.serviceId,
         bikeId: result.bikeId,
 
         //  convert to string
@@ -36,16 +42,16 @@ const getAllBikeServicesFromDB = async ()  => {
   };
 
   //get single Bike Record from database
-const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {      
+const getByIdFromDB = async (serviceId: string): Promise<TServiceRecord | null>  => {      
     const result = await prisma.serviceRecord.findUnique({
-        where: { id }
+        where: {serviceId }
       })
       if(!result){
         throw new AppError(httpStatus.NOT_FOUND, "Bike services Record not found")       
     }    
     
     return {
-        serviceId: result.id, 
+        serviceId: result.serviceId, 
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -76,24 +82,24 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
   //     return rest as TCustomerRest;
   // };
   //Update from Database
-  const updateIntoDB = async (id: string, data: Partial<TServiceRecord>): Promise<TServiceRecord> => {  
+  const updateIntoDB = async (serviceId: string, data: Partial<TServiceRecord>): Promise<TServiceRecord> => {  
 
-    if (!id) {
+    if (!serviceId) {
       throw new AppError(httpStatus.BAD_REQUEST, "Service ID is required");
     }
   
     // Check if the service record exists
-    const existingRecord = await prisma.serviceRecord.findUnique({ where: { id } });
+    const existingRecord = await prisma.serviceRecord.findUnique({ where: { serviceId } });
     if (!existingRecord) {
       throw new AppError(httpStatus.NOT_FOUND, "Service record not found");
     }
 
   const result = await prisma.serviceRecord.update({
-    where: { id },
+    where: {serviceId },
     data,
   });
   return {
-    serviceId: result.id,
+    serviceId: result.serviceId,
     bikeId: result.bikeId,
     serviceDate: result.serviceDate.toISOString(),
     completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -104,11 +110,11 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
 
 
   //delete Bike from database
-  const deleteFromDB = async (id: string): Promise<TServiceRecord | null> => {
-    const result = await prisma.serviceRecord.delete({ where: { id } });
+  const deleteFromDB = async (serviceId: string): Promise<TServiceRecord | null> => {
+    const result = await prisma.serviceRecord.delete({ where: { serviceId } });
   
     return {
-      serviceId: result.id,
+      serviceId: result.serviceId,
       bikeId: result.bikeId,
       serviceDate: result.serviceDate.toISOString(),
       completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -117,34 +123,49 @@ const getByIdFromDB = async (id: string): Promise<TServiceRecord | null>  => {
     };
   };
 
-  const getOverdueOrPendingServices = async (): Promise<TServiceRecord[]> => {
-    const now = new Date();
-    const sevenDaysAgoUTC = new Date(Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate() - 7
-    ));
-  
-    const results = await prisma.serviceRecord.findMany({
-      where: {
-        status: {
-          in: ['pending', 'in_progress'],
-        },
-        serviceDate: {
-          lt: sevenDaysAgoUTC, 
-        },
+
+
+
+const getOverdueOrPendingServices = async (): Promise<ServiceResponse> => {
+  const now = new Date();
+  const sevenDaysAgoUTC = new Date(Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() - 7
+  ));
+
+  const results = await prisma.serviceRecord.findMany({
+    where: {
+      status: {
+        in: ['pending', 'in_progress'],
       },
-    });  
-  
-    return results.map((record) => ({
-      serviceId: record.id,
-      bikeId: record.bikeId,
-      serviceDate: record.serviceDate.toISOString(),
-      completionDate: record.completionDate ? record.completionDate.toISOString() : null,
-      description: record.description,
-      status: record.status,
-    }));
+      serviceDate: {
+        lt: sevenDaysAgoUTC,
+      },
+    },
+  });
+
+  const formatted = results.map((record) => ({
+    serviceId: record.serviceId,
+    bikeId: record.bikeId,
+    serviceDate: record.serviceDate.toISOString(),
+    completionDate: record.completionDate ? record.completionDate.toISOString() : null,
+    description: record.description,
+    status: record.status,
+  }));
+
+  if (formatted.length === 0) {
+    return {
+      data: [],
+      message: "No overdue or pending services found.",
+    };
+  }
+
+  return {
+    data: formatted,
+    message: "Success",
   };
+};
 
   export const BikeSRecordServices = {
     createServicesRecord,

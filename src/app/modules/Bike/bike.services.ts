@@ -7,7 +7,7 @@ import httpStatus from "http-status"
 const createbike = async (payload: TBike): Promise<TBike> => {
 
   const customerExists = await prisma.customer.findUnique({
-    where: { id: payload.customerId }
+    where: { customerId: payload.customerId }
   });
 
   if (!customerExists) {
@@ -36,9 +36,9 @@ const getAllBikeFromDB = async ()  => {
   };
 
   //get single Bike from database
-const getByIdFromDB = async (id: string): Promise<TBike | null>  => {      
+const getByIdFromDB = async (bikeId: string): Promise<TBike | null>  => {      
     const result = await prisma.bike.findUnique({
-        where: { id }
+        where: { bikeId }
       })
       if (!result) {
         throw new AppError(httpStatus.NOT_FOUND, "bike not found");
@@ -47,10 +47,10 @@ const getByIdFromDB = async (id: string): Promise<TBike | null>  => {
   };
 
   //Update from Database
-  const updateIntoDB = async (id: string, data: Partial<TBike>): Promise<TBike> => {  
+  const updateIntoDB = async (bikeId: string, data: Partial<TBike>): Promise<TBike> => {  
     const result = await prisma.bike.update({
         where: {
-          id: id
+          bikeId: bikeId
         },
         data
       })
@@ -59,10 +59,10 @@ const getByIdFromDB = async (id: string): Promise<TBike | null>  => {
 
 
   //delete Bike from database
-const deleteFromDB = async (id: string): Promise<TBike | null>  => {  
+const deleteFromDB = async (bikeId: string): Promise<TBike | null>  => {  
     const result = await prisma.bike.delete({
         where: {
-          id: id
+          bikeId: bikeId
         }
       })
     return result;

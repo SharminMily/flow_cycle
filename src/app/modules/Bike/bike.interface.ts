@@ -1,5 +1,5 @@
 export type TBike = {
-    id: string | undefined;
+    bikeId: string | undefined;
     brand: string | undefined;
     model: string | undefined;
     year:number | undefined;

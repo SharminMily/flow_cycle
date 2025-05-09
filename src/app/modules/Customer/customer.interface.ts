@@ -10,7 +10,7 @@ export type TCustomerUpdate = {
    }
 
 export type TCustomerRest = {
-    id: string;
+    customerId : string;
     email: string | undefined;
     name: string | undefined;  
     phone: string | undefined;

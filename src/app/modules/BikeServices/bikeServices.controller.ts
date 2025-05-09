@@ -28,8 +28,8 @@ const getAllBikeSRecordFromDB = catchAsynce (async (req, res) => {
   
   //single bike from database
   const getByIdFromDB = catchAsynce (async (req, res) => {
-    const {id} = req.params 
-    const result = await BikeSRecordServices.getByIdFromDB(id);  
+    const {serviceId} = req.params 
+    const result = await BikeSRecordServices.getByIdFromDB(serviceId);  
     sendResponse(res, {
       statusCode:  httpStatus.OK,
       success: true,
@@ -41,8 +41,8 @@ const getAllBikeSRecordFromDB = catchAsynce (async (req, res) => {
   
   ///update
 const updateIdFromDB = catchAsynce (async (req, res) => {
-    const {id} = req.params 
-    const result = await BikeSRecordServices.updateIntoDB(id, req.body);  
+    const {serviceId} = req.params 
+    const result = await BikeSRecordServices.updateIntoDB(serviceId, req.body);  
     sendResponse(res, {
       statusCode:  httpStatus.OK,
       success: true,
@@ -53,13 +53,13 @@ const updateIdFromDB = catchAsynce (async (req, res) => {
   
   //Delete bike from database
   const deleteBikeSRecordFromDB = catchAsynce (async (req, res) => {
-    const {id} = req.params 
-    const result = await BikeSRecordServices.deleteFromDB(id);  
+    const {serviceId} = req.params 
+    await BikeSRecordServices.deleteFromDB(serviceId);  
     sendResponse(res, {
       statusCode:  httpStatus.OK,
       success: true,
       message: "Service record deleted successfully", 
-      data: result
+      data: []
     })
   })
 

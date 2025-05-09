@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -10,25 +10,25 @@ datasource db {
 
 //Customer Table
 model Customer {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  phone     String
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
-  bike      Bike[]
+  customerId String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  phone      String
+  createdAt  DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  bike       Bike[]
 
   @@map("customers")
 }
 
 //Bike Table
 model Bike {
-  id         String          @id @default(uuid())
+  bikeId     String          @id @default(uuid())
   brand      String
   model      String
   year       Int
   customerId String
-  customer   Customer        @relation(fields: [customerId], references: [id])
+  customer   Customer        @relation(fields: [customerId], references: [customerId])
   service    ServiceRecord[]
 
   @@map("bikes")
@@ -36,9 +36,9 @@ model Bike {
 
 //ServiceRecord Table
 model ServiceRecord {
-  id             String    @id @default(uuid())
+  serviceId      String    @id @default(uuid())
   bikeId         String
-  bike           Bike      @relation(fields: [bikeId], references: [id])
+  bike           Bike      @relation(fields: [bikeId], references: [bikeId])
   serviceDate    DateTime  @default(now())
   completionDate DateTime?
   description    String
