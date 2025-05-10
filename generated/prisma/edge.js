@@ -154,7 +154,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\level-2\\allAssignment\\flow-cycle-server8\\src\\generated\\prisma",
+      "value": "E:\\level-2\\allAssignment\\flow-cycle-server8\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -173,9 +173,9 @@ const config = {
   },
   "relativeEnvPaths": {
     "rootEnvPath": null,
-    "schemaEnvPath": "../../../.env"
+    "schemaEnvPath": "../../.env"
   },
-  "relativePath": "../../../prisma",
+  "relativePath": "../../prisma",
   "clientVersion": "6.7.0",
   "engineVersion": "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed",
   "datasourceNames": [
@@ -191,8 +191,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n//Customer Table\nmodel Customer {\n  customerId String   @id @default(uuid())\n  name       String\n  email      String   @unique\n  phone      String\n  createdAt  DateTime @default(now())\n  updateAt   DateTime @updatedAt\n  bike       Bike[]\n\n  @@map(\"customers\")\n}\n\n//Bike Table\nmodel Bike {\n  bikeId     String          @id @default(uuid())\n  brand      String\n  model      String\n  year       Int\n  customerId String\n  customer   Customer        @relation(fields: [customerId], references: [customerId])\n  service    ServiceRecord[]\n\n  @@map(\"bikes\")\n}\n\n//ServiceRecord Table\nmodel ServiceRecord {\n  serviceId      String    @id @default(uuid())\n  bikeId         String\n  bike           Bike      @relation(fields: [bikeId], references: [bikeId])\n  serviceDate    DateTime  @default(now())\n  completionDate DateTime?\n  description    String\n  status         Status\n}\n\nenum Status {\n  pending\n  in_progress @map(\"in-progress\")\n  done\n}\n",
-  "inlineSchemaHash": "75bc72587d9586718add660a8ce4a4adcb5643f2d3aa00c6f13ffb87723b0518",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\n//Customer Table\nmodel Customer {\n  customerId String   @id @default(uuid())\n  name       String\n  email      String   @unique\n  phone      String\n  createdAt  DateTime @default(now())\n  updateAt   DateTime @updatedAt\n  bike       Bike[]\n\n  @@map(\"customers\")\n}\n\n//Bike Table\nmodel Bike {\n  bikeId     String          @id @default(uuid())\n  brand      String\n  model      String\n  year       Int\n  customerId String\n  customer   Customer        @relation(fields: [customerId], references: [customerId])\n  service    ServiceRecord[]\n\n  @@map(\"bikes\")\n}\n\n//ServiceRecord Table\nmodel ServiceRecord {\n  serviceId      String    @id @default(uuid())\n  bikeId         String\n  bike           Bike      @relation(fields: [bikeId], references: [bikeId])\n  serviceDate    DateTime  @default(now())\n  completionDate DateTime?\n  description    String\n  status         Status\n}\n\nenum Status {\n  pending\n  in_progress @map(\"in-progress\")\n  done\n}\n",
+  "inlineSchemaHash": "bc6cdd26e5507888dcd6425c2c0ea81deae6e1f9ad33ebcd990c1909d2183282",
   "copyEngine": true
 }
 config.dirname = '/'

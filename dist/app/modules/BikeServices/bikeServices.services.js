@@ -32,9 +32,11 @@ const createServicesRecord = (payload) => __awaiter(void 0, void 0, void 0, func
         bikeId: result.bikeId,
         //  convert to string
         serviceDate: result.serviceDate.toISOString(),
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
+        completionDate: result.completionDate
+            ? result.completionDate.toISOString()
+            : null,
         description: result.description,
-        status: result.status
+        status: result.status,
     };
 });
 //get all Bikes Record from database
@@ -45,7 +47,7 @@ const getAllBikeServicesFromDB = () => __awaiter(void 0, void 0, void 0, functio
 //get single Bike Record from database
 const getByIdFromDB = (serviceId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prismaClient_1.prisma.serviceRecord.findUnique({
-        where: { serviceId }
+        where: { serviceId },
     });
     if (!result) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Bike services Record not found");
@@ -54,9 +56,11 @@ const getByIdFromDB = (serviceId) => __awaiter(void 0, void 0, void 0, function*
         serviceId: result.serviceId,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
+        completionDate: result.completionDate
+            ? result.completionDate.toISOString()
+            : null,
         description: result.description,
-        status: result.status
+        status: result.status,
     };
 });
 //   const existingCustomer = await prisma.customer.findUnique({
@@ -84,7 +88,9 @@ const updateIntoDB = (serviceId, data) => __awaiter(void 0, void 0, void 0, func
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "Service ID is required");
     }
     // Check if the service record exists
-    const existingRecord = yield prismaClient_1.prisma.serviceRecord.findUnique({ where: { serviceId } });
+    const existingRecord = yield prismaClient_1.prisma.serviceRecord.findUnique({
+        where: { serviceId },
+    });
     if (!existingRecord) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Service record not found");
     }
@@ -96,7 +102,9 @@ const updateIntoDB = (serviceId, data) => __awaiter(void 0, void 0, void 0, func
         serviceId: result.serviceId,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
+        completionDate: result.completionDate
+            ? result.completionDate.toISOString()
+            : null,
         description: result.description,
         status: result.status,
     };
@@ -108,9 +116,11 @@ const deleteFromDB = (serviceId) => __awaiter(void 0, void 0, void 0, function* 
         serviceId: result.serviceId,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
+        completionDate: result.completionDate
+            ? result.completionDate.toISOString()
+            : null,
         description: result.description,
-        status: result.status
+        status: result.status,
     };
 });
 const getOverdueOrPendingServices = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -119,7 +129,7 @@ const getOverdueOrPendingServices = () => __awaiter(void 0, void 0, void 0, func
     const results = yield prismaClient_1.prisma.serviceRecord.findMany({
         where: {
             status: {
-                in: ['pending', 'in_progress'],
+                in: ["pending", "in_progress"],
             },
             serviceDate: {
                 lt: sevenDaysAgoUTC,
@@ -130,7 +140,9 @@ const getOverdueOrPendingServices = () => __awaiter(void 0, void 0, void 0, func
         serviceId: record.serviceId,
         bikeId: record.bikeId,
         serviceDate: record.serviceDate.toISOString(),
-        completionDate: record.completionDate ? record.completionDate.toISOString() : null,
+        completionDate: record.completionDate
+            ? record.completionDate.toISOString()
+            : null,
         description: record.description,
         status: record.status,
     }));
@@ -151,5 +163,5 @@ exports.BikeSRecordServices = {
     getByIdFromDB,
     updateIntoDB,
     deleteFromDB,
-    getOverdueOrPendingServices
+    getOverdueOrPendingServices,
 };

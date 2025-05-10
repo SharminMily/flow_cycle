@@ -1,143 +1,153 @@
-
-import { Status } from "../../../generated/prisma";
+import { Status } from "../../../../generated/prisma";
 import AppError from "../../../shared/AppError";
 import { prisma } from "../../../shared/prismaClient";
 import { TServiceRecord } from "./bikeServices.interface";
-import  httpStatus  from "http-status";
+import httpStatus from "http-status";
 
 type ServiceResponse = {
   data: TServiceRecord[];
   message: string;
-}
+};
 
 //Create Bike Record
-const createServicesRecord = async (payload: TServiceRecord): Promise<TServiceRecord> => {
-    const servicesRecordData = {
-        bikeId: payload.bikeId as string,
-        serviceDate: new Date(payload.serviceDate as string),
-        description: payload.description as string,
-        status: payload.status as Status,
-    };
-  
-    const result = await prisma.serviceRecord.create({
-      data: servicesRecordData,
-    });
-    return {
-        serviceId: result.serviceId,
-        bikeId: result.bikeId,
+const createServicesRecord = async (
+  payload: TServiceRecord
+): Promise<TServiceRecord> => {
+  const servicesRecordData = {
+    bikeId: payload.bikeId as string,
+    serviceDate: new Date(payload.serviceDate as string),
+    description: payload.description as string,
+    status: payload.status as Status,
+  };
 
-        //  convert to string
-        serviceDate: result.serviceDate.toISOString(), 
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
-        description: result.description,
-        status: result.status
-      };
-}
+  const result = await prisma.serviceRecord.create({
+    data: servicesRecordData,
+  });
+  return {
+    serviceId: result.serviceId,
+    bikeId: result.bikeId,
 
+    //  convert to string
+    serviceDate: result.serviceDate.toISOString(),
+    completionDate: result.completionDate
+      ? result.completionDate.toISOString()
+      : null,
+    description: result.description,
+    status: result.status,
+  };
+};
 
 //get all Bikes Record from database
-const getAllBikeServicesFromDB = async ()  => {  
-    const result = await prisma.serviceRecord.findMany() 
-    return result;
-  };
+const getAllBikeServicesFromDB = async () => {
+  const result = await prisma.serviceRecord.findMany();
+  return result;
+};
 
-  //get single Bike Record from database
-const getByIdFromDB = async (serviceId: string): Promise<TServiceRecord | null>  => {      
-    const result = await prisma.serviceRecord.findUnique({
-        where: {serviceId }
-      })
-      if(!result){
-        throw new AppError(httpStatus.NOT_FOUND, "Bike services Record not found")       
-    }    
-    
-    return {
-        serviceId: result.serviceId, 
-        bikeId: result.bikeId,
-        serviceDate: result.serviceDate.toISOString(),
-        completionDate: result.completionDate ? result.completionDate.toISOString() : null,
-        description: result.description,
-        status: result.status
-      };
-  };
-  
-  //   const existingCustomer = await prisma.customer.findUnique({
-  //     where: { id }
-  //   });
-  
-  //   if (!existingCustomer) {
-  //     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
-  //   }
-  //   const result = await prisma.customer.update({
-  //       where: {
-  //         id: id
-  //       },
-  //       data: {
-  //         name: data.name,
-  //         phone: data.phone,
-  //         email: undefined,
-  //       }
-  //     })
-     
-  //     const { email, ...rest } = result;
-  //     return rest as TCustomerRest;
-  // };
-  //Update from Database
-  const updateIntoDB = async (serviceId: string, data: Partial<TServiceRecord>): Promise<TServiceRecord> => {  
+//get single Bike Record from database
+const getByIdFromDB = async (
+  serviceId: string
+): Promise<TServiceRecord | null> => {
+  const result = await prisma.serviceRecord.findUnique({
+    where: { serviceId },
+  });
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Bike services Record not found");
+  }
 
-    if (!serviceId) {
-      throw new AppError(httpStatus.BAD_REQUEST, "Service ID is required");
-    }
-  
-    // Check if the service record exists
-    const existingRecord = await prisma.serviceRecord.findUnique({ where: { serviceId } });
-    if (!existingRecord) {
-      throw new AppError(httpStatus.NOT_FOUND, "Service record not found");
-    }
+  return {
+    serviceId: result.serviceId,
+    bikeId: result.bikeId,
+    serviceDate: result.serviceDate.toISOString(),
+    completionDate: result.completionDate
+      ? result.completionDate.toISOString()
+      : null,
+    description: result.description,
+    status: result.status,
+  };
+};
+
+//   const existingCustomer = await prisma.customer.findUnique({
+//     where: { id }
+//   });
+
+//   if (!existingCustomer) {
+//     throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+//   }
+//   const result = await prisma.customer.update({
+//       where: {
+//         id: id
+//       },
+//       data: {
+//         name: data.name,
+//         phone: data.phone,
+//         email: undefined,
+//       }
+//     })
+
+//     const { email, ...rest } = result;
+//     return rest as TCustomerRest;
+// };
+//Update from Database
+const updateIntoDB = async (
+  serviceId: string,
+  data: Partial<TServiceRecord>
+): Promise<TServiceRecord> => {
+  if (!serviceId) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Service ID is required");
+  }
+
+  // Check if the service record exists
+  const existingRecord = await prisma.serviceRecord.findUnique({
+    where: { serviceId },
+  });
+  if (!existingRecord) {
+    throw new AppError(httpStatus.NOT_FOUND, "Service record not found");
+  }
 
   const result = await prisma.serviceRecord.update({
-    where: {serviceId },
+    where: { serviceId },
     data,
   });
   return {
     serviceId: result.serviceId,
     bikeId: result.bikeId,
     serviceDate: result.serviceDate.toISOString(),
-    completionDate: result.completionDate ? result.completionDate.toISOString() : null,
+    completionDate: result.completionDate
+      ? result.completionDate.toISOString()
+      : null,
     description: result.description,
     status: result.status,
   };
+};
+
+//delete Bike from database
+const deleteFromDB = async (
+  serviceId: string
+): Promise<TServiceRecord | null> => {
+  const result = await prisma.serviceRecord.delete({ where: { serviceId } });
+
+  return {
+    serviceId: result.serviceId,
+    bikeId: result.bikeId,
+    serviceDate: result.serviceDate.toISOString(),
+    completionDate: result.completionDate
+      ? result.completionDate.toISOString()
+      : null,
+    description: result.description,
+    status: result.status,
   };
-
-
-  //delete Bike from database
-  const deleteFromDB = async (serviceId: string): Promise<TServiceRecord | null> => {
-    const result = await prisma.serviceRecord.delete({ where: { serviceId } });
-  
-    return {
-      serviceId: result.serviceId,
-      bikeId: result.bikeId,
-      serviceDate: result.serviceDate.toISOString(),
-      completionDate: result.completionDate ? result.completionDate.toISOString() : null,
-      description: result.description,
-      status: result.status
-    };
-  };
-
-
-
+};
 
 const getOverdueOrPendingServices = async (): Promise<ServiceResponse> => {
   const now = new Date();
-  const sevenDaysAgoUTC = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate() - 7
-  ));
+  const sevenDaysAgoUTC = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7)
+  );
 
   const results = await prisma.serviceRecord.findMany({
     where: {
       status: {
-        in: ['pending', 'in_progress'],
+        in: ["pending", "in_progress"],
       },
       serviceDate: {
         lt: sevenDaysAgoUTC,
@@ -149,7 +159,9 @@ const getOverdueOrPendingServices = async (): Promise<ServiceResponse> => {
     serviceId: record.serviceId,
     bikeId: record.bikeId,
     serviceDate: record.serviceDate.toISOString(),
-    completionDate: record.completionDate ? record.completionDate.toISOString() : null,
+    completionDate: record.completionDate
+      ? record.completionDate.toISOString()
+      : null,
     description: record.description,
     status: record.status,
   }));
@@ -167,11 +179,11 @@ const getOverdueOrPendingServices = async (): Promise<ServiceResponse> => {
   };
 };
 
-  export const BikeSRecordServices = {
-    createServicesRecord,
-    getAllBikeServicesFromDB,
-    getByIdFromDB,
-    updateIntoDB,
-    deleteFromDB,
-    getOverdueOrPendingServices
-  }
+export const BikeSRecordServices = {
+  createServicesRecord,
+  getAllBikeServicesFromDB,
+  getByIdFromDB,
+  updateIntoDB,
+  deleteFromDB,
+  getOverdueOrPendingServices,
+};
