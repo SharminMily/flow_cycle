@@ -18,7 +18,7 @@ const sendResponse_1 = require("../../../shared/sendResponse");
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = require("../../../shared/catchAsync");
 const createCustomer = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //console.log(req.query)  
+    // console.log(req.body)  
     const result = yield customer_services_1.CustomerServices.createCustomer(req.body);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.CREATED,
@@ -40,8 +40,9 @@ const getAllCustomerFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __await
 }));
 //single customer from database
 const getByIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield customer_services_1.CustomerServices.getByIdFromDB(id);
+    const { customerId } = req.params;
+    console.log(customerId);
+    const result = yield customer_services_1.CustomerServices.getByIdFromDB(customerId);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -51,8 +52,8 @@ const getByIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void
 }));
 //update
 const updateIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield customer_services_1.CustomerServices.updateIntoDB(id, req.body);
+    const { customerId } = req.params;
+    const result = yield customer_services_1.CustomerServices.updateIntoDB(customerId, req.body);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -62,8 +63,8 @@ const updateIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(voi
 }));
 //Delete customer from database
 const deleteCustomerFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield customer_services_1.CustomerServices.deleteFromDB(id);
+    const { customerId } = req.params;
+    const result = yield customer_services_1.CustomerServices.deleteFromDB(customerId);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

@@ -19,7 +19,7 @@ const http_status_1 = __importDefault(require("http-status"));
 //Create Bike
 const createbike = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const customerExists = yield prismaClient_1.prisma.customer.findUnique({
-        where: { id: payload.customerId }
+        where: { customerId: payload.customerId }
     });
     if (!customerExists) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Customer not found");
@@ -41,9 +41,9 @@ const getAllBikeFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 //get single Bike from database
-const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const getByIdFromDB = (bikeId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prismaClient_1.prisma.bike.findUnique({
-        where: { id }
+        where: { bikeId }
     });
     if (!result) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "bike not found");
@@ -51,20 +51,20 @@ const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 //Update from Database
-const updateIntoDB = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+const updateIntoDB = (bikeId, data) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prismaClient_1.prisma.bike.update({
         where: {
-            id: id
+            bikeId: bikeId
         },
         data
     });
     return result;
 });
 //delete Bike from database
-const deleteFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteFromDB = (bikeId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prismaClient_1.prisma.bike.delete({
         where: {
-            id: id
+            bikeId: bikeId
         }
     });
     return result;

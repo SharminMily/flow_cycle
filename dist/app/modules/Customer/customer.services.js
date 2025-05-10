@@ -33,7 +33,7 @@ const createCustomer = (payload) => __awaiter(void 0, void 0, void 0, function* 
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "All fields are required.");
     }
     const existingCustomer = yield prismaClient_1.prisma.customer.findUnique({
-        where: { email: payload.email }
+        where: { email: payload.email },
     });
     if (existingCustomer) {
         throw new AppError_1.default(http_status_1.default.CONFLICT, "Email already exists. Please use a different email.");
@@ -54,11 +54,11 @@ const getAllCustomerFromDB = () => __awaiter(void 0, void 0, void 0, function* (
     return result;
 });
 //get single  customer from database
-const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const getByIdFromDB = (customerId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prismaClient_1.prisma.customer.findUnique({
         where: {
-            id: id
-        }
+            customerId: customerId,
+        },
     });
     if (!result) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Customer not found");
@@ -66,39 +66,39 @@ const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 //Update from Database
-const updateIntoDB = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+const updateIntoDB = (customerId, data) => __awaiter(void 0, void 0, void 0, function* () {
     const existingCustomer = yield prismaClient_1.prisma.customer.findUnique({
-        where: { id }
+        where: { customerId },
     });
     if (!existingCustomer) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Customer not found");
     }
     const result = yield prismaClient_1.prisma.customer.update({
         where: {
-            id: id
+            customerId: customerId,
         },
         data: {
             name: data.name,
             phone: data.phone,
             email: undefined,
-        }
+        },
     });
     const { email } = result, rest = __rest(result, ["email"]);
     return rest;
 });
 //delete customer from database
-const deleteFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!id) {
+const deleteFromDB = (customerId) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!customerId) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "Customer ID is required");
     }
     const customerExists = yield prismaClient_1.prisma.customer.findUnique({
-        where: { id }
+        where: { customerId },
     });
     if (!customerExists) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Customer not found");
     }
     const result = yield prismaClient_1.prisma.customer.delete({
-        where: { id }
+        where: { customerId },
     });
     if (!result) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Customer not found");
@@ -110,5 +110,5 @@ exports.CustomerServices = {
     getAllCustomerFromDB,
     getByIdFromDB,
     updateIntoDB,
-    deleteFromDB
+    deleteFromDB,
 };

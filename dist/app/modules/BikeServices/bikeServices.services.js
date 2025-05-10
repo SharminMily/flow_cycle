@@ -28,7 +28,7 @@ const createServicesRecord = (payload) => __awaiter(void 0, void 0, void 0, func
         data: servicesRecordData,
     });
     return {
-        serviceId: result.id,
+        serviceId: result.serviceId,
         bikeId: result.bikeId,
         //  convert to string
         serviceDate: result.serviceDate.toISOString(),
@@ -43,15 +43,15 @@ const getAllBikeServicesFromDB = () => __awaiter(void 0, void 0, void 0, functio
     return result;
 });
 //get single Bike Record from database
-const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const getByIdFromDB = (serviceId) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prismaClient_1.prisma.serviceRecord.findUnique({
-        where: { id }
+        where: { serviceId }
     });
     if (!result) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Bike services Record not found");
     }
     return {
-        serviceId: result.id,
+        serviceId: result.serviceId,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -79,21 +79,21 @@ const getByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
 //     return rest as TCustomerRest;
 // };
 //Update from Database
-const updateIntoDB = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!id) {
+const updateIntoDB = (serviceId, data) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!serviceId) {
         throw new AppError_1.default(http_status_1.default.BAD_REQUEST, "Service ID is required");
     }
     // Check if the service record exists
-    const existingRecord = yield prismaClient_1.prisma.serviceRecord.findUnique({ where: { id } });
+    const existingRecord = yield prismaClient_1.prisma.serviceRecord.findUnique({ where: { serviceId } });
     if (!existingRecord) {
         throw new AppError_1.default(http_status_1.default.NOT_FOUND, "Service record not found");
     }
     const result = yield prismaClient_1.prisma.serviceRecord.update({
-        where: { id },
+        where: { serviceId },
         data,
     });
     return {
-        serviceId: result.id,
+        serviceId: result.serviceId,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -102,10 +102,10 @@ const updateIntoDB = (id, data) => __awaiter(void 0, void 0, void 0, function* (
     };
 });
 //delete Bike from database
-const deleteFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prismaClient_1.prisma.serviceRecord.delete({ where: { id } });
+const deleteFromDB = (serviceId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prismaClient_1.prisma.serviceRecord.delete({ where: { serviceId } });
     return {
-        serviceId: result.id,
+        serviceId: result.serviceId,
         bikeId: result.bikeId,
         serviceDate: result.serviceDate.toISOString(),
         completionDate: result.completionDate ? result.completionDate.toISOString() : null,
@@ -126,14 +126,24 @@ const getOverdueOrPendingServices = () => __awaiter(void 0, void 0, void 0, func
             },
         },
     });
-    return results.map((record) => ({
-        serviceId: record.id,
+    const formatted = results.map((record) => ({
+        serviceId: record.serviceId,
         bikeId: record.bikeId,
         serviceDate: record.serviceDate.toISOString(),
         completionDate: record.completionDate ? record.completionDate.toISOString() : null,
         description: record.description,
         status: record.status,
     }));
+    if (formatted.length === 0) {
+        return {
+            data: [],
+            message: "No overdue or pending services found.",
+        };
+    }
+    return {
+        data: formatted,
+        message: "Success",
+    };
 });
 exports.BikeSRecordServices = {
     createServicesRecord,

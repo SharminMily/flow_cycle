@@ -39,8 +39,8 @@ const getAllBikeFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(v
 }));
 //single bike from database
 const getByIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield bike_services_1.BikeService.getByIdFromDB(id);
+    const { bikeId } = req.params;
+    const result = yield bike_services_1.BikeService.getByIdFromDB(bikeId);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -50,8 +50,8 @@ const getByIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void
 }));
 ///update
 const updateIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield bike_services_1.BikeService.updateIntoDB(id, req.body);
+    const { bikeId } = req.params;
+    const result = yield bike_services_1.BikeService.updateIntoDB(bikeId, req.body);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -61,13 +61,13 @@ const updateIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(voi
 }));
 //Delete bike from database
 const deleteBikeFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield bike_services_1.BikeService.deleteFromDB(id);
+    const { bikeId } = req.params;
+    const result = yield bike_services_1.BikeService.deleteFromDB(bikeId);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: "Bike deleted successfully",
-        data: result
+        data: []
     });
 }));
 exports.BikeController = {

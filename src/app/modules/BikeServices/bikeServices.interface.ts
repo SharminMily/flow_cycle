@@ -1,4 +1,5 @@
-import { Status } from "../../../../generated/prisma";
+import { Status } from "../../../generated/prisma";
+
 
 export type TServiceRecord = {
     serviceId: string | undefined;

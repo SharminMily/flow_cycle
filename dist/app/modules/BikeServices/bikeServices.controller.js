@@ -38,8 +38,8 @@ const getAllBikeSRecordFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __aw
 }));
 //single bike from database
 const getByIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield bikeServices_services_1.BikeSRecordServices.getByIdFromDB(id);
+    const { serviceId } = req.params;
+    const result = yield bikeServices_services_1.BikeSRecordServices.getByIdFromDB(serviceId);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -49,8 +49,8 @@ const getByIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void
 }));
 ///update
 const updateIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield bikeServices_services_1.BikeSRecordServices.updateIntoDB(id, req.body);
+    const { serviceId } = req.params;
+    const result = yield bikeServices_services_1.BikeSRecordServices.updateIntoDB(serviceId, req.body);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -60,13 +60,13 @@ const updateIdFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(voi
 }));
 //Delete bike from database
 const deleteBikeSRecordFromDB = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield bikeServices_services_1.BikeSRecordServices.deleteFromDB(id);
+    const { serviceId } = req.params;
+    yield bikeServices_services_1.BikeSRecordServices.deleteFromDB(serviceId);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: "Service record deleted successfully",
-        data: result
+        data: []
     });
 }));
 const getServiceStatusHandler = (0, catchAsync_1.catchAsynce)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
